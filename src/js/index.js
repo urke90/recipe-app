@@ -1,6 +1,39 @@
 // Global app controller
 import SearchModel from "./models/Search";
+import * as searchView from "./views/searchView";
+import { domElements } from "./views/base";
 
-const searchRecipe = new SearchModel("pizza");
+/* Global state of the app
+- Search object
+- Current recipe object
+- Shopping list object
+- Liked recipes
+*/
+const state = {};
 
-searchRecipe.getResults();
+// recipe search handler
+const searchForRecipeHandler = async () => {
+  // 1. Get query from the view ( from search input.value )
+  const query = searchView.getInputValueHandler();
+
+  if (query) {
+    // 2. Get new search object and add it to the state
+    state.search = new SearchModel(query);
+    // 3. Prepare UI for results
+    searchView.clearSearchInputValueHandler();
+    searchView.removeRecipesHandler();
+    // 4. Search for recipes
+    await state.search.getResults();
+
+    // 5. Render results on UI
+    searchView.renderSearchResultsHandler(state.search.results);
+
+    //
+  }
+};
+
+domElements.searchForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  searchForRecipeHandler();
+});
