@@ -25,7 +25,7 @@ const searchForRecipeHandler = async () => {
     base.renderLoaderHandler(base.domElements.searchResultsContainer);
     // 4. Search for recipes
     await state.search.getResults();
-
+    console.log(state.search.results);
     // 5. Render results on UI
     searchView.renderSearchResultsHandler(state.search.results);
     base.removeLoaderHandler();

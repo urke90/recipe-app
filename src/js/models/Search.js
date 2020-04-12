@@ -12,7 +12,7 @@ export default class SearchModel {
         `https://forkify-api.herokuapp.com/api/search?q=${this.query}`
       );
       this.results = res.data.recipes;
-      //console.log("result from fetching recipes", this.result);
+      //console.log("result from fetching recipes", this.results);
     } catch (error) {
       console.log("search results error", error);
     }

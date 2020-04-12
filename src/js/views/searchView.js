@@ -56,15 +56,70 @@ const renderRecipeHandler = (recipe) => {
   domElements.searchResultsList.innerHTML += recipeMarkup;
 };
 
+// create HTML structure for next and prev btns
+// type = "next" or "prev"
+const createPagBtnStructureHandler = (currentPage, type) => `
+  <button class="btn-inline results__btn--${type}" data-gotoPage=${
+  type === "prev" ? currentPage - 1 : currentPage + 1
+}>
+    <svg class="search__icon">
+      <use href="img/icons.svg#icon-triangle-${
+        type === "prev" ? "left" : "right"
+      }"></use>
+    </svg>
+    <span>Page ${type === "prev" ? currentPage - 1 : currentPage + 1}</span>
+  </button>
+`;
+
+/*
+render pagination buttons
+totalNumResults = total number of result (recipes) we fetch
+resPerPage = how many recipes we have per page
+curPage = current page
+*/
+const renderPaginationBtnsHandler = (curPage, totalNumResults, resPerPage) => {
+  /*
+  total num of pages we need for pagi
+  Math.ceil in case totalNumPages = 4.5 (round it to higher intiger)
+  */
+  const totalNumPages = Math.ceil(totalNumResults / resPerPage);
+  let btn;
+  if (curPage === 1 && totalNumPages > 1) {
+    // display only "next" btn
+    btn = createPagBtnStructureHandler(curPage, "next");
+  } else if (curPage < totalNumPages) {
+    // display "prev" and "next" btns
+    btn = `
+      ${createPagBtnStructureHandler(curPage, "prev")}
+      ${createPagBtnStructureHandler(curPage, "next")}
+    `;
+  } else if (curPage === totalNumPages && totalNumPages > 1) {
+    // display "prev" btn
+    btn = createPagBtnStructureHandler(curPage, "prev");
+  }
+
+  domElements.searchResultPages.innerHTML += btn;
+};
+
 // render fetched search results on UI
-export const renderSearchResultsHandler = (recipes) => {
+export const renderSearchResultsHandler = (
+  recipes,
+  curPage = 1,
+  itemsPerPage = 10
+) => {
+  // render recipes on UI
+  const startSlice = (curPage - 1) * itemsPerPage; // for page 1 startSlice = 0
+  const endSlice = curPage * itemsPerPage; // slice won't include end element ( no need for -1)
+
   /*
      loop through fetched recepis and render them on UI 
     ( shorthand version---> single recipe will be passed to renderRecipeHandler function )
   */
-
-  recipes.forEach(renderRecipeHandler);
+  recipes.slice(startSlice, endSlice).forEach(renderRecipeHandler);
 
   // loop through fetched recipes and render them on UI
   // recipes.forEach((recipe) => renderRecipeHandler(recipe));
+
+  // render pagination buttons on page
+  renderPaginationBtnsHandler(curPage, recipes.length, itemsPerPage);
 };
