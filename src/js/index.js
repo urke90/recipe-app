@@ -33,9 +33,23 @@ const searchForRecipeHandler = async () => {
     //
   }
 };
-
+// search form submit
 base.domElements.searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   searchForRecipeHandler();
+});
+
+base.domElements.searchResultPagination.addEventListener("click", (event) => {
+  const btn = event.target.closest(".btn-inline");
+
+  if (btn) {
+    const goToPage = parseInt(btn.getAttribute("data-gotopage"));
+    console.log("goToPage", goToPage);
+    searchView.removeRecipesHandler();
+    searchView.renderSearchResultsHandler(state.search.results, goToPage);
+    // same as getAttribute but we can also set the attribute value like e.g. below
+    //let goToPage = (btn.dataset.gotopage = "uros");
+    //console.log("gotoPage", gotoPage);
+  }
 });

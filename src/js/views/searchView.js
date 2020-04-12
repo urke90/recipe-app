@@ -8,8 +8,10 @@ export const clearSearchInputValueHandler = () =>
   (domElements.searchInput.value = "");
 
 // removes recipes list from the UI
-export const removeRecipesHandler = () =>
-  (domElements.searchResultsList.innerHTML = "");
+export const removeRecipesHandler = () => {
+  domElements.searchResultsList.innerHTML = "";
+  domElements.searchResultPagination.innerHTML = "";
+};
 
 /*
 Will shorthen recipe title
@@ -62,12 +64,13 @@ const createPagBtnStructureHandler = (currentPage, type) => `
   <button class="btn-inline results__btn--${type}" data-gotoPage=${
   type === "prev" ? currentPage - 1 : currentPage + 1
 }>
+    <span>Page ${type === "prev" ? currentPage - 1 : currentPage + 1}</span>
     <svg class="search__icon">
       <use href="img/icons.svg#icon-triangle-${
         type === "prev" ? "left" : "right"
       }"></use>
     </svg>
-    <span>Page ${type === "prev" ? currentPage - 1 : currentPage + 1}</span>
+   
   </button>
 `;
 
@@ -98,7 +101,7 @@ const renderPaginationBtnsHandler = (curPage, totalNumResults, resPerPage) => {
     btn = createPagBtnStructureHandler(curPage, "prev");
   }
 
-  domElements.searchResultPages.innerHTML += btn;
+  domElements.searchResultPagination.innerHTML += btn;
 };
 
 // render fetched search results on UI
