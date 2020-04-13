@@ -1,5 +1,6 @@
 // Global app controller
 import SearchModel from "./models/Search";
+import RecipeModel from "./models/Recipe";
 import * as searchView from "./views/searchView";
 import * as base from "./views/base";
 
@@ -11,7 +12,7 @@ import * as base from "./views/base";
 */
 const state = {};
 
-// recipe search handler
+// recipe search handler ( search controller )
 const searchForRecipeHandler = async () => {
   // 1. Get query from the view ( from search input.value )
   const query = searchView.getInputValueHandler();
@@ -53,3 +54,9 @@ base.domElements.searchResultPagination.addEventListener("click", (event) => {
     //console.log("gotoPage", gotoPage);
   }
 });
+
+// Recipe conrtoller
+
+const r = new RecipeModel("35626");
+r.getRecipe();
+console.log("recipe", r);
