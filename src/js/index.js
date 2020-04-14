@@ -13,10 +13,10 @@ import * as base from "./views/base";
 const state = {};
 
 // recipe search handler ( search controller )
-const searchForRecipeHandler = async () => {
+const searchRecipesHandler = async () => {
   // 1. Get query from the view ( from search input.value )
-  const query = searchView.getInputValueHandler();
-
+  //const query = searchView.getInputValueHandler();
+  const query = "pizza";
   if (query) {
     // 2. Get new search object and add it to the state
     state.search = new SearchModel(query);
@@ -25,20 +25,29 @@ const searchForRecipeHandler = async () => {
     searchView.removeRecipesHandler();
     base.renderLoaderHandler(base.domElements.searchResultsContainer);
     // 4. Search for recipes
-    await state.search.getResults();
-    console.log(state.search.results);
-    // 5. Render results on UI
-    searchView.renderSearchResultsHandler(state.search.results);
-    base.removeLoaderHandler();
-
-    //
+    try {
+      await state.search.getResults();
+      console.log(state.search.results);
+      // 5. Render results on UI
+      searchView.renderSearchResultsHandler(state.search.results);
+      base.removeLoaderHandler();
+    } catch (error) {
+      console.log("error fetching recepis", error);
+    }
   }
 };
 // search form submit
 base.domElements.searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  searchForRecipeHandler();
+  searchRecipesHandler();
+});
+
+// testing
+window.addEventListener("load", (event) => {
+  event.preventDefault();
+
+  searchRecipesHandler();
 });
 
 base.domElements.searchResultPagination.addEventListener("click", (event) => {
@@ -57,6 +66,32 @@ base.domElements.searchResultPagination.addEventListener("click", (event) => {
 
 // Recipe conrtoller
 
-const r = new RecipeModel("35626");
-r.getRecipe();
-console.log("recipe", r);
+const controlRecipe = async () => {
+  const id = window.location.hash.replace("#", "");
+  // const id = window.location.hash.split("#")[1];
+
+  if (id) {
+    // 1. Prepare UI for changes
+
+    // 2. Create new Recipe object
+    state.recipe = new RecipeModel(id);
+    // 3. Get recipe data
+    try {
+      await state.recipe.getRecipe();
+      // 4. Calculate serving and cooking time
+      state.recipe.calcCookingTime();
+      state.recipe.calcServings();
+      // 5. Render recipe
+      console.log("recipe after fetch", state.recipe);
+    } catch (error) {
+      console.log("error fechting recipe");
+    }
+  }
+};
+
+// window.addEventListener("hashchange", controlRecipe);
+// window.addEventListener("load", controlRecipe);
+
+["hashchange", "load"].map((eventType) =>
+  window.addEventListener(eventType, controlRecipe)
+);
