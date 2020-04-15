@@ -36,13 +36,13 @@ export default class RecipeModel {
   }
 
   parseIngredients() {
-    const unitLong = [
+    const unitsLong = [
       "tablespoons",
       "tablespoon",
-      "ounce",
       "ounces",
-      "teaspoon",
+      "ounce",
       "teaspoons",
+      "teaspoon",
       "cups",
       "pounds",
     ];
@@ -56,18 +56,49 @@ export default class RecipeModel {
       "cup",
       "pound",
     ];
+
     const newIngredients = this.ingredients.map((el) => {
       // 1. Uniform units
       let ingredient = el.toLowerCase();
-      unitLong.map((unitL, i) => {
-        ingredient.replace(unitL, unitShort[i]);
+      unitsLong.map((unitL, i) => {
+        ingredient = ingredient.replace(unitL, unitShort[i]);
       });
       // 2. Remove parentheses
-      ingredient.replace(/ *\([^)]*\) */g, "");
+      ingredient = ingredient.replace(/ *\([^)]*\) */g, " ");
       // 3. Parse ingredients into count, unit and ingredient
+      const arrIng = ingredient.split(" ");
+      const unitIndex = arrIng.findIndex((el2) => unitShort.includes(el2));
+      //console.log("arrIng", arrIng);
+      //console.log("unitIndex", unitIndex);
 
-      return ingredient;
+      let objIng;
+      if (unitIndex > 1) {
+        // There is a unit
+        // Ex. 4 1/2 cups, arrCount is [4, 1/2]
+        // Ex. 4 cups, arrCount is [4]
+        // Ex. 1-1/3 cup, means it is 1 + 1/3
+        const arrCount = arrIng.slice(0, unitIndex);
+        console.log("arrCount", arrCount);
+      } else if (parseInt(arrIng[0], 10)) {
+        // There is NO unit but the 1st element is the number
+        objIng = {
+          count: parseInt(arrIng[0], 10),
+          unit: "",
+          ingredient: arrIng.slice(1).join(" "),
+        };
+      } else if (unitIndex === 0) {
+        // There is NO unit and NO number in 1st position
+        objIng = {
+          count: 1,
+          unit: "",
+          ingredient,
+        };
+      }
+      //const unitIndex = arrIng.findIndex();
+      // console.log("ingredient", ingredient);
+      return objIng;
     });
+    console.log("newIngredients", newIngredients);
     this.ingredients = newIngredients;
   }
 }

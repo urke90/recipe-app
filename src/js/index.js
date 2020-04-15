@@ -16,6 +16,8 @@ const state = {};
 const searchRecipesHandler = async () => {
   // 1. Get query from the view ( from search input.value )
   //const query = searchView.getInputValueHandler();
+
+  // TESTING
   const query = "pizza";
   if (query) {
     // 2. Get new search object and add it to the state
@@ -27,7 +29,7 @@ const searchRecipesHandler = async () => {
     // 4. Search for recipes
     try {
       await state.search.getResults();
-      console.log(state.search.results);
+      //console.log(state.search.results);
       // 5. Render results on UI
       searchView.renderSearchResultsHandler(state.search.results);
       base.removeLoaderHandler();
@@ -65,7 +67,6 @@ base.domElements.searchResultPagination.addEventListener("click", (event) => {
 });
 
 // Recipe conrtoller
-
 const controlRecipe = async () => {
   const id = window.location.hash.replace("#", "");
   // const id = window.location.hash.split("#")[1];
@@ -75,14 +76,18 @@ const controlRecipe = async () => {
 
     // 2. Create new Recipe object
     state.recipe = new RecipeModel(id);
+
+    // TESTING
+    window.r = state.recipe;
     // 3. Get recipe data
     try {
       await state.recipe.getRecipe();
       // 4. Calculate serving and cooking time
       state.recipe.calcCookingTime();
       state.recipe.calcServings();
+
       // 5. Render recipe
-      console.log("recipe after fetch", state.recipe);
+      //console.log("recipe after fetch", state.recipe);
     } catch (error) {
       console.log("error fechting recipe");
     }
