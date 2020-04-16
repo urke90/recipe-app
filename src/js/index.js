@@ -2,6 +2,7 @@
 import SearchModel from "./models/Search";
 import RecipeModel from "./models/Recipe";
 import * as searchView from "./views/searchView";
+import * as recipeView from "./views/recipeView";
 import * as base from "./views/base";
 
 /* Global state of the app
@@ -15,10 +16,8 @@ const state = {};
 // recipe search handler ( search controller )
 const searchRecipesHandler = async () => {
   // 1. Get query from the view ( from search input.value )
-  //const query = searchView.getInputValueHandler();
+  const query = searchView.getInputValueHandler();
 
-  // TESTING
-  const query = "pizza";
   if (query) {
     // 2. Get new search object and add it to the state
     state.search = new SearchModel(query);
@@ -45,19 +44,11 @@ base.domElements.searchForm.addEventListener("submit", (event) => {
   searchRecipesHandler();
 });
 
-// testing
-window.addEventListener("load", (event) => {
-  event.preventDefault();
-
-  searchRecipesHandler();
-});
-
 base.domElements.searchResultPagination.addEventListener("click", (event) => {
   const btn = event.target.closest(".btn-inline");
 
   if (btn) {
     const goToPage = parseInt(btn.getAttribute("data-gotopage"));
-    console.log("goToPage", goToPage);
     searchView.removeRecipesHandler();
     searchView.renderSearchResultsHandler(state.search.results, goToPage);
     // same as getAttribute but we can also set the attribute value like e.g. below
@@ -73,23 +64,26 @@ const controlRecipe = async () => {
 
   if (id) {
     // 1. Prepare UI for changes
-
+    recipeView.clearRecipeHandler();
+    base.renderLoaderHandler(base.domElements.recipe);
     // 2. Create new Recipe object
     state.recipe = new RecipeModel(id);
 
-    // TESTING
-    window.r = state.recipe;
-    // 3. Get recipe data
     try {
+      // 3. Get recipe data and parse ngredients
+
       await state.recipe.getRecipe();
+      state.recipe.parseIngredients();
       // 4. Calculate serving and cooking time
       state.recipe.calcCookingTime();
       state.recipe.calcServings();
 
       // 5. Render recipe
+      base.removeLoaderHandler();
+      recipeView.renderRecipeHandler(state.recipe);
       //console.log("recipe after fetch", state.recipe);
     } catch (error) {
-      console.log("error fechting recipe");
+      console.log("error fechting recipe", error);
     }
   }
 };
