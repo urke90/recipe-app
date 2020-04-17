@@ -62,6 +62,9 @@ const controlRecipe = async () => {
   const id = window.location.hash.replace("#", "");
   // const id = window.location.hash.split("#")[1];
 
+  //highlight searched recipe
+  if (state.search) searchView.highlightSelectedHandler(id);
+
   if (id) {
     // 1. Prepare UI for changes
     recipeView.clearRecipeHandler();

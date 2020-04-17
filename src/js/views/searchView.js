@@ -1,5 +1,15 @@
 import { domElements } from "./base";
 
+// highlight selected recipe
+export const highlightSelectedHandler = (id) => {
+  const a = document.querySelectorAll(".results__link");
+
+  a.forEach((el) => el.classList.remove("results__link--active"));
+  document
+    .querySelector(`a[href="#${id}"]`)
+    .classList.toggle("results__link--active");
+};
+
 // get search input value
 export const getInputValueHandler = () => domElements.searchInput.value;
 
