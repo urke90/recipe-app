@@ -110,12 +110,21 @@ export default class RecipeModel {
           ingredient,
         };
       }
-      //const unitIndex = arrIng.findIndex();
-      // console.log("ingredient", ingredient);
-      //console.log("objIng AFTER", objIng);
+
       return objIng;
     });
     this.ingredients = newIngredients;
     //console.log("ingredients", this.ingredients);
+  }
+
+  updateServings(type) {
+    // Servings
+    const newServings = type === "dec" ? this.servings - 1 : this.servings + 1;
+    // Ingredients
+    this.ingredients.map((ing) => {
+      ing.count *= newServings / this.servings;
+    });
+
+    this.servings = newServings;
   }
 }

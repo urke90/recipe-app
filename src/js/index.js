@@ -97,3 +97,21 @@ const controlRecipe = async () => {
 ["hashchange", "load"].map((eventType) =>
   window.addEventListener(eventType, controlRecipe)
 );
+base.domElements.recipe.addEventListener("click", (event) => {
+  console.log("event.target", event.target);
+  /* event will be trigered if we click on btn-decrease
+    or .btn-decrease * ---> or any child element of .btn-decrease
+  */
+  if (event.target.matches(".btn-decrease, .btn-decrease *")) {
+    // decrese btn is clicked
+    if (state.recipe.servings > 1) {
+      state.recipe.updateServings("dec");
+      recipeView.updateServingsIngredients(state.recipe);
+    }
+  } else if (event.target.matches(".btn-increase, .btn-increase *")) {
+    //increase btn is clicked
+    state.recipe.updateServings("inc");
+    recipeView.updateServingsIngredients(state.recipe);
+  }
+  console.log("state.recipe", state.recipe.ingredients);
+});
