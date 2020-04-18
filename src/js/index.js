@@ -120,7 +120,8 @@ base.domElements.recipe.addEventListener("click", (event) => {
 });
 
 base.domElements.recipe.addEventListener("click", (event) => {
-  console.log(event.target.matches(".recipe__btn .recipe__btn *"));
+  console.log(
+    "event.target",
+    event.target.matches("recipe__btn, recipe__btn *")
+  );
 });
-
-window.l = new ShoppingList();
