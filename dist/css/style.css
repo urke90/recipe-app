@@ -542,8 +542,8 @@ body {
 }
 .shopping__list {
   list-style: none;
-  max-height: 77rem;
-  overflow: scroll;
+  /* max-height: 77rem; */
+  /* overflow: scroll; */
 }
 .shopping__item {
   display: flex;
@@ -568,7 +568,8 @@ body {
   font-size: 1.2rem;
   text-align: center;
   border: none;
-  width: 3.7rem;
+  /* width: 3.7rem; */
+  width: 4rem;
   border-radius: 3px;
 }
 .shopping__count input:focus {

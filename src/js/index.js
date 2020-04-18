@@ -4,6 +4,7 @@ import RecipeModel from "./models/Recipe";
 import ShoppingList from "./models/ShoppingList";
 import * as searchView from "./views/searchView";
 import * as recipeView from "./views/recipeView";
+import * as shoppingListView from "./views/shoppingListView";
 import * as base from "./views/base";
 
 /* Global state of the app
@@ -13,7 +14,7 @@ import * as base from "./views/base";
 - Liked recipes
 */
 const state = {};
-
+window.state = state;
 // recipe search handler ( search controller )
 const searchRecipesHandler = async () => {
   // 1. Get query from the view ( from search input.value )
@@ -101,7 +102,7 @@ const controlRecipeHandler = async () => {
 );
 
 base.domElements.recipe.addEventListener("click", (event) => {
-  console.log("event.target", event.target);
+  //console.log("event.target", event.target);
   /* event will be trigered if we click on btn-decrease
     or .btn-decrease * ---> or any child element of .btn-decrease
   */
@@ -115,13 +116,52 @@ base.domElements.recipe.addEventListener("click", (event) => {
     //increase btn is clicked
     state.recipe.updateServings("inc");
     recipeView.updateServingsIngredients(state.recipe);
+  } else if (event.target.matches(".recipe__btn--add, .recipe__btn--add *")) {
+    // add to shopping list btn clicked
+    controlShoppingListHandler();
   }
-  console.log("state.recipe", state.recipe.ingredients);
+
+  //console.log("state.recipe", state.recipe.ingredients);
 });
 
-base.domElements.recipe.addEventListener("click", (event) => {
-  console.log(
-    "event.target",
-    event.target.matches("recipe__btn, recipe__btn *")
-  );
+// base.domElements.recipe.addEventListener("click", (event) => {
+//   console.log(
+//     "event.target",
+//     event.target.matches("recipe__btn, recipe__btn *")
+//   );
+// });
+
+const controlShoppingListHandler = () => {
+  // create a new sjpping list IF there is none yet
+  if (!state.list) state.list = new ShoppingList();
+  // Add each ingredient to the list
+
+  state.recipe.ingredients.map((ing) => {
+    const item = state.list.addItem(ing.count, ing.unit, ing.ingredient);
+    shoppingListView.renderItemHandler(item);
+  });
+  console.log("state.list 1", state.list);
+};
+
+// hadnle delete adn update list items event
+base.domElements.shoppingList.addEventListener("click", (event) => {
+  const selectedElId = event.target
+    .closest(".shopping__item")
+    .getAttribute("data-itemid");
+
+  if (event.target.matches(".shopping__delete, .shopping__delete *")) {
+    if (selectedElId) {
+      // delete from state
+      state.list.deleteItem(selectedElId);
+      // delete from UI
+      shoppingListView.deleteItemHandler(selectedElId);
+    }
+  } else if (event.target.matches(".shopping__count--value")) {
+    const newCount = parseFloat(event.target.value);
+    if (newCount) {
+      state.list.updateCount(selectedElId, newCount);
+    }
+  }
+
+  console.log("state.list 2", state.list);
 });
