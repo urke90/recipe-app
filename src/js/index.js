@@ -1,6 +1,7 @@
 // Global app controller
 import SearchModel from "./models/Search";
 import RecipeModel from "./models/Recipe";
+import ShoppingList from "./models/ShoppingList";
 import * as searchView from "./views/searchView";
 import * as recipeView from "./views/recipeView";
 import * as base from "./views/base";
@@ -58,7 +59,7 @@ base.domElements.searchResultPagination.addEventListener("click", (event) => {
 });
 
 // Recipe conrtoller
-const controlRecipe = async () => {
+const controlRecipeHandler = async () => {
   const id = window.location.hash.replace("#", "");
   // const id = window.location.hash.split("#")[1];
 
@@ -73,7 +74,7 @@ const controlRecipe = async () => {
     state.recipe = new RecipeModel(id);
 
     try {
-      // 3. Get recipe data and parse ngredients
+      // 3. Get recipe data and parse igredients
 
       await state.recipe.getRecipe();
       state.recipe.parseIngredients();
@@ -94,9 +95,11 @@ const controlRecipe = async () => {
 // window.addEventListener("hashchange", controlRecipe);
 // window.addEventListener("load", controlRecipe);
 
+//
 ["hashchange", "load"].map((eventType) =>
-  window.addEventListener(eventType, controlRecipe)
+  window.addEventListener(eventType, controlRecipeHandler)
 );
+
 base.domElements.recipe.addEventListener("click", (event) => {
   console.log("event.target", event.target);
   /* event will be trigered if we click on btn-decrease
@@ -115,3 +118,9 @@ base.domElements.recipe.addEventListener("click", (event) => {
   }
   console.log("state.recipe", state.recipe.ingredients);
 });
+
+base.domElements.recipe.addEventListener("click", (event) => {
+  console.log(event.target.matches(".recipe__btn .recipe__btn *"));
+});
+
+window.l = new ShoppingList();

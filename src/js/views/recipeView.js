@@ -119,7 +119,7 @@ export const renderRecipeHandler = (recipe) => {
     `;
   base.domElements.recipe.innerHTML += recipeMarkup;
 };
-
+// updating serving and ingredients count on UI
 export const updateServingsIngredients = (recipe) => {
   // update servings
   document.querySelector(".recipe__info-data--people").textContent =
