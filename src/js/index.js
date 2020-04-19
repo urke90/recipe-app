@@ -134,6 +134,19 @@ const controlLikesHandler = () => {
   }
   likesView.toggleLikeMenu(state.likes.getNumLikes());
 };
+// when page loads we create new likes array and read the data from local storage
+window.addEventListener("load", () => {
+  state.likes = new Likes();
+
+  // fill likes array with the data from local storage
+  state.likes.readStorage();
+
+  // toggles like menu if there is item in likes array
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
+
+  // render like items in the menu
+  state.likes.likes.map(likesView.renderLikeHandler);
+});
 
 // events on .recipe
 base.domElements.recipe.addEventListener("click", (event) => {
