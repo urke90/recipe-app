@@ -6,7 +6,7 @@ export const highlightSelectedHandler = (id) => {
 
   a.forEach((el) => el.classList.remove("results__link--active"));
   document
-    .querySelector(`a[href="#${id}"]`)
+    .querySelector(`.results__link[href="#${id}"]`)
     .classList.toggle("results__link--active");
 };
 
@@ -31,7 +31,7 @@ Will shorthen recipe title
 3. acc = 9, curVal = 6, => newTitle = ['Pasta', 'with', 'tomato']
 4. acc = 15, curVal = 3 // will add no more since we set the limit to 17 => newTitle = ['Pasta', 'with', 'tomato']
 */
-const shortenRecipeTitleHandler = (title, limit = 17) => {
+export const shortenRecipeTitleHandler = (title, limit = 17) => {
   const newTitle = [];
 
   if (title.length > limit) {

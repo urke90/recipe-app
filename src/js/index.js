@@ -5,6 +5,7 @@ import ShoppingList from "./models/ShoppingList";
 import Likes from "./models/Likes";
 import * as searchView from "./views/searchView";
 import * as recipeView from "./views/recipeView";
+import * as likesView from "./views/likesView";
 import * as shoppingListView from "./views/shoppingListView";
 import * as base from "./views/base";
 
@@ -88,7 +89,7 @@ const controlRecipeHandler = async () => {
 
       // 5. Render recipe
       base.removeLoaderHandler();
-      recipeView.renderRecipeHandler(state.recipe);
+      recipeView.renderRecipeHandler(state.recipe, state.likes.isLiked(id));
       //console.log("recipe after fetch", state.recipe);
     } catch (error) {
       console.log("error fechting recipe", error);
@@ -99,6 +100,10 @@ const controlRecipeHandler = async () => {
 ["hashchange", "load"].map((eventType) =>
   window.addEventListener(eventType, controlRecipeHandler)
 );
+
+// TESTING
+state.likes = new Likes();
+likesView.toggleLikeMenu(state.likes.getNumLikes());
 
 // Likes controller
 const controlLikesHandler = () => {
@@ -113,19 +118,21 @@ const controlLikesHandler = () => {
     const newLike = state.likes.addLike(id, title, author, img);
 
     // Toggle the like button
-
+    likesView.toggleLikeBtn(true);
     // Add the like to the UI
-    console.log("state.likes add", state.likes);
+    likesView.renderLikeHandler(newLike);
   } else {
     // user HAS liked current recipe
 
     // Remove like from the state
     state.likes.deleteLike(currentId);
     // Toggle the like button
-
+    likesView.toggleLikeBtn(false);
     // Remove Like from the UI
+    likesView.deleteLikeHandler(currentId);
     console.log("state.likes remove", state.likes);
   }
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
 };
 
 // events on .recipe

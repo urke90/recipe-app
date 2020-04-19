@@ -42,7 +42,7 @@ const createIngredient = (ingredient) =>
         </li>
   `;
 // renders the selected recipie on the UI
-export const renderRecipeHandler = (recipe) => {
+export const renderRecipeHandler = (recipe, isLiked) => {
   const recipeMarkup = `
     
     <figure class="recipe__fig">
@@ -84,7 +84,9 @@ export const renderRecipeHandler = (recipe) => {
         </div>
         <button class="recipe__love">
             <svg class="header__likes">
-                <use href="img/icons.svg#icon-heart-outlined"></use>
+                <use href="img/icons.svg#icon-heart${
+                  isLiked ? "" : "-outlined"
+                }"></use>
             </svg>
         </button>
     </div>
