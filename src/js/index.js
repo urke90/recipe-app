@@ -2,6 +2,7 @@
 import SearchModel from "./models/Search";
 import RecipeModel from "./models/Recipe";
 import ShoppingList from "./models/ShoppingList";
+import Likes from "./models/Likes";
 import * as searchView from "./views/searchView";
 import * as recipeView from "./views/recipeView";
 import * as shoppingListView from "./views/shoppingListView";
@@ -13,7 +14,9 @@ import * as base from "./views/base";
 - Shopping list object
 - Liked recipes
 */
+// GLOBAL STATE OF THE APP
 const state = {};
+// save it to window object
 window.state = state;
 // recipe search handler ( search controller )
 const searchRecipesHandler = async () => {
@@ -45,7 +48,7 @@ base.domElements.searchForm.addEventListener("submit", (event) => {
 
   searchRecipesHandler();
 });
-
+// event triggered on next/prev page for pagination
 base.domElements.searchResultPagination.addEventListener("click", (event) => {
   const btn = event.target.closest(".btn-inline");
 
@@ -93,44 +96,65 @@ const controlRecipeHandler = async () => {
   }
 };
 
-// window.addEventListener("hashchange", controlRecipe);
-// window.addEventListener("load", controlRecipe);
-
-//
 ["hashchange", "load"].map((eventType) =>
   window.addEventListener(eventType, controlRecipeHandler)
 );
 
+// Likes controller
+const controlLikesHandler = () => {
+  if (!state.likes) state.likes = new Likes();
+
+  // id of the current recipe
+  const currentId = state.recipe.id;
+  // user has NOT  yet liked current recipe
+  if (!state.likes.isLiked(currentId)) {
+    const { id, title, author, img } = state.recipe;
+    // Add like to the state
+    const newLike = state.likes.addLike(id, title, author, img);
+
+    // Toggle the like button
+
+    // Add the like to the UI
+    console.log("state.likes add", state.likes);
+  } else {
+    // user HAS liked current recipe
+
+    // Remove like from the state
+    state.likes.deleteLike(currentId);
+    // Toggle the like button
+
+    // Remove Like from the UI
+    console.log("state.likes remove", state.likes);
+  }
+};
+
+// events on .recipe
 base.domElements.recipe.addEventListener("click", (event) => {
   //console.log("event.target", event.target);
   /* event will be trigered if we click on btn-decrease
     or .btn-decrease * ---> or any child element of .btn-decrease
   */
   if (event.target.matches(".btn-decrease, .btn-decrease *")) {
-    // decrese btn is clicked
+    // decrese num of servings btn is clicked
     if (state.recipe.servings > 1) {
       state.recipe.updateServings("dec");
       recipeView.updateServingsIngredients(state.recipe);
     }
   } else if (event.target.matches(".btn-increase, .btn-increase *")) {
-    //increase btn is clicked
+    //increase num of servings btn is clicked
     state.recipe.updateServings("inc");
     recipeView.updateServingsIngredients(state.recipe);
   } else if (event.target.matches(".recipe__btn--add, .recipe__btn--add *")) {
-    // add to shopping list btn clicked
+    // add recipe ingredients to shopping list
     controlShoppingListHandler();
+  } else if (event.target.matches(".recipe__love, .recipe__love *")) {
+    controlLikesHandler();
   }
 
   //console.log("state.recipe", state.recipe.ingredients);
 });
 
-// base.domElements.recipe.addEventListener("click", (event) => {
-//   console.log(
-//     "event.target",
-//     event.target.matches("recipe__btn, recipe__btn *")
-//   );
-// });
-
+// Shopping control list
 const controlShoppingListHandler = () => {
   // create a new sjpping list IF there is none yet
   if (!state.list) state.list = new ShoppingList();
@@ -162,6 +186,4 @@ base.domElements.shoppingList.addEventListener("click", (event) => {
       state.list.updateCount(selectedElId, newCount);
     }
   }
-
-  console.log("state.list 2", state.list);
 });
