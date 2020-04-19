@@ -17,8 +17,7 @@ import * as base from "./views/base";
 */
 // GLOBAL STATE OF THE APP
 const state = {};
-// save it to window object
-window.state = state;
+
 // recipe search handler ( search controller )
 const searchRecipesHandler = async () => {
   // 1. Get query from the view ( from search input.value )

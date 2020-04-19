@@ -1,4 +1,3 @@
-import * as base from "./base";
 import { shortenRecipeTitleHandler } from "./searchView";
 
 export const toggleLikeBtn = (isLiked) => {
